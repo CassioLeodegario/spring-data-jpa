@@ -18,16 +18,16 @@ package org.springframework.data.jpa.repository.query;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.lang.reflect.Method;
-import java.util.Set;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
 
+import java.lang.reflect.Method;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.sample.Role;
 import org.springframework.data.jpa.domain.sample.User;
 import org.springframework.data.jpa.provider.PersistenceProvider;
@@ -60,10 +60,11 @@ public class AbstractStringBasedJpaQueryIntegrationTests {
 		when(mock.getMetamodel()).thenReturn(em.getMetamodel());
 
 		JpaQueryMethod method = getMethod("findRolesByEmailAddress", String.class);
-		AbstractStringBasedJpaQuery jpaQuery = new SimpleJpaQuery(method, mock,
-				null, QueryMethodEvaluationContextProvider.DEFAULT, new SpelExpressionParser());
+		AbstractStringBasedJpaQuery jpaQuery = new SimpleJpaQuery(method, mock, null,
+				QueryMethodEvaluationContextProvider.DEFAULT, new SpelExpressionParser());
 
-		jpaQuery.createJpaQuery(method.getAnnotatedQuery(), method.getResultProcessor().getReturnedType());
+		jpaQuery.createJpaQuery(method.getAnnotatedQuery(), Sort.unsorted(), null,
+				method.getResultProcessor().getReturnedType());
 
 		verify(mock, times(1)).createQuery(anyString());
 		verify(mock, times(0)).createQuery(anyString(), eq(Tuple.class));
